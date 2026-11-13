@@ -1,0 +1,26 @@
+{
+  "rows": [
+    {
+      "rid": "b",
+      "partition": "CN",
+      "order": "1",
+      "value": "2"
+    },
+    {
+      "rid": "a",
+      "partition": "CN",
+      "order": "1",
+      "value": "3"
+    },
+    {
+      "rid": "c",
+      "partition": "CN",
+      "order": "2",
+      "value": null
+    }
+  ],
+  "query": {
+    "ascending": true,
+    "nulls_first": false
+  }
+}
