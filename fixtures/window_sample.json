@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "rows": [
+    {"rid": "CN-2021", "partition": "CN", "order": "2021", "value": "100"},
+    {"rid": "CN-2022-a", "partition": "CN", "order": "2022", "value": "30"},
+    {"rid": "CN-2022-b", "partition": "CN", "order": "2022", "value": "50"},
+    {"rid": "CN-2023", "partition": "CN", "order": "2023", "value": null},
+    {"rid": "EU-2021", "partition": "EU", "order": "2021", "value": "20"},
+    {"rid": "EU-2022", "partition": "EU", "order": "2022", "value": "40"}
+  ],
+  "windows": [
+    {
+      "name": "rows_recent_2",
+      "partition_by": ["partition"],
+      "order_by": [{"field": "order", "ascending": true, "nulls_first": false}],
+      "frame": {
+        "mode": "ROWS",
+        "start": {"kind": "OFFSET", "direction": "PRECEDING", "offset": 1},
+        "end": {"kind": "CURRENT ROW"},
+        "exclude": "NO OTHERS"
+      },
+      "measures": [
+        {"fn": "SUM", "field": "value", "alias": "recent_sum"},
+        {"fn": "AVG", "field": "value", "alias": "recent_avg"},
+        {"fn": "COUNT", "field": "*", "alias": "row_count"}
+      ]
+    },
+    {
+      "name": "range_same_year_ties",
+      "partition_by": ["partition"],
+      "order_by": [{"field": "order", "ascending": true, "nulls_first": false}],
+      "frame": {
+        "mode": "RANGE",
+        "start": {"kind": "CURRENT ROW"},
+        "end": {"kind": "CURRENT ROW"},
+        "exclude": "TIES"
+      },
+      "measures": [
+        {"fn": "SUM", "field": "value", "alias": "self_sum"}
+      ]
+    },
+    {
+      "name": "groups_to_end",
+      "partition_by": ["partition"],
+      "order_by": [{"field": "order", "ascending": true, "nulls_first": false}],
+      "frame": {
+        "mode": "GROUPS",
+        "start": {"kind": "CURRENT ROW"},
+        "end": {"kind": "UNBOUNDED", "direction": "FOLLOWING"},
+        "exclude": "GROUP"
+      },
+      "measures": [
+        {"fn": "COUNT", "field": "value", "alias": "later_value_count"}
+      ]
+    }
+  ],
+  "settings": {"mem_rows": 4, "debug_members": true}
+}
